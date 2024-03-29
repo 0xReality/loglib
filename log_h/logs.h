@@ -5,7 +5,6 @@
 #include <stdio.h>     /* fprintf, snprintf, va_start, va_end, vfprintf, perror, fdopen */
 #include <stdlib.h>    /* malloc, free, exit */
 #include <time.h>      /* time, localtime, strftime */
-#include <unistd.h>    /* close (indirectement utilisée via fclose) */
 #include <fcntl.h>     /* open */
 #include <stdarg.h>    /* va_list, va_start, va_end */
 
@@ -13,7 +12,7 @@
 #define BUFSIZE 1024
 
 #define LOG(l, lt, format, ...) printl(l, lt, __FILE__, __LINE__, __func__, format, ##__VA_ARGS__)
-#define FLOG(l) logFunctionCall(l, LOG, __FILE__, __LINE__, __func__)
+#define FLOG(l) log_function_call(l, LOG, __FILE__, __LINE__, __func__)
 
 enum log_type{
     INFO = 0,
@@ -23,9 +22,7 @@ enum log_type{
 };
 
 typedef struct log_s{
-    enum log_type type;
     char* path;
-    int fd;
     FILE* f;
 }* log;
 
@@ -56,7 +53,7 @@ log log_init();
  * @param lt  Type de log (enum log_type).
  * @return char*  Pointeur vers la chaîne de caractères représentant le type de log.
 */
-char* getlog_type(enum log_type lt);
+char* get_log_type(enum log_type lt);
 
 
 /* 
@@ -83,7 +80,7 @@ void printl(log l, enum log_type lt, const char *file, int line, const char* fun
  *   @param line Numéro de la ligne dans le fichier source.
  *   @param func Nom de la fonction appelante.
 */
-void logFunctionCall(log l, enum log_type lt, const char *file, int line, const char* func);
+void log_function_call(log l, enum log_type lt, const char *file, int line, const char* func);
 
 /* 
  *  marque la fin du programme
@@ -98,7 +95,7 @@ void sepatator(log l);
  * Libère la mémoire et ferme les ressources associées à l'instance de log.
  * 
  * Paramètre:
- *   @param l  Pointeur vers un pointeur de la structure de log.
+ *   @param l adresse du pointeur de la structure de log.
 */
 void log_destroy(log* l);
 

@@ -35,29 +35,24 @@ log log_init()
 
     if(l == NULL){
         perror("log_init:malloc");
+        free(l);
         exit(1);
     }
 
     l->path = get_log_file();
-
-    int fd = open(l->path, O_RDWR | O_CREAT, 0777);
-    if(-1 == fd){
-        perror("log_init:malloc");
-        exit(1);
-    }
-
-    l->fd = fd;
-
-    l->f = fdopen(l->fd, "a");
+    l->f = fopen(l->path, "a");
     if (l->f == NULL) { 
-        perror("log_init: fdopen");
+        perror("log_init: fopen");
+        free(l->path); 
+        free(l);        
         exit(1);
     }
+
 
     return l;
 }
 
-char* getlog_type(enum log_type lt)
+char* get_log_type(enum log_type lt)
 {
     switch (lt) {
         case INFO:
@@ -78,7 +73,7 @@ char* getlog_type(enum log_type lt)
 
 void printl(log l, enum log_type lt, const char *file, int line, const char* func, const char *format, ...) 
 {
-    if (l == NULL || l->fd == -1 || l->f == NULL) {
+    if (l == NULL || l->f == NULL) {
         fprintf(stderr, "Invalid log structure or file descriptor.\n");
         return;
     }
@@ -89,7 +84,11 @@ void printl(log l, enum log_type lt, const char *file, int line, const char* fun
         return;
     }
 
-    snprintf(buf, BUFSIZE, "[%s] [%s] [%s:%d] [%s] > %s\n", get_time(), getlog_type(lt), file, line, func, format);
+    char* timebuf = get_time();
+
+    snprintf(buf, BUFSIZE, "[%s] [%s] [%s:%d] [%s] > %s\n", timebuf, get_log_type(lt), file, line, func, format);
+
+    free(timebuf);
 
     va_list args;
     va_start(args, format);
@@ -103,9 +102,9 @@ void printl(log l, enum log_type lt, const char *file, int line, const char* fun
     free(buf);
 }
 
-void logFunctionCall(log l, enum log_type lt, const char *file, int line, const char* func) 
+void log_function_call(log l, enum log_type lt, const char *file, int line, const char* func) 
 {
-    if (l == NULL || l->fd == -1 || l->f == NULL) {
+    if (l == NULL || l->f == NULL) {
         fprintf(stderr, "Invalid log structure or file descriptor.\n");
         return;
     }
@@ -116,10 +115,14 @@ void logFunctionCall(log l, enum log_type lt, const char *file, int line, const 
         return;
     }
 
+    char* timebuf = get_time();
+
     snprintf(
         buf, BUFSIZE, "[%s] [%s] [%s:%d] call: %s()\n",
-        get_time(), getlog_type(lt), file, line, func
+        timebuf, get_log_type(lt), file, line, func
     );
+
+    free(timebuf);
 
     fprintf(l->f, "%s", buf);
 
@@ -128,7 +131,7 @@ void logFunctionCall(log l, enum log_type lt, const char *file, int line, const 
     free(buf);
 }
 
-void sepatator(log l)
+void sepatator(log l)   
 {
     FLOG(l);
     fprintf(l->f, "\t\t\t\t\t\t\t\t\t\t\t--------------\n");

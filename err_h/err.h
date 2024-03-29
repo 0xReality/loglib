@@ -21,8 +21,13 @@ void initialize_error_messages();
 /* Renvoie le message d'erreur correspondant au code d'erreur donné.
 * 
 * @param code  Le code d'erreur pour lequel obtenir le message.
+* @param @param l    Pointeur vers la structure de log.
 * @return const char*  Pointeur vers le message d'erreur correspondant.
 */    
-const char* get_err_mess(ErrorCode code);
+const char* get_err_mess(ErrorCode code, log l);
+
+
+// detruit le err_mes 
+void destroy_err_mess();
 
 #endif // ERR_H

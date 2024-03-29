@@ -16,7 +16,7 @@ logs.o: log_h/logs.c log_h/logs.h
 
 err.o: err_h/err.c err_h/err.h
 	$(CC) $(CFLAGS) -c err_h/err.c
-
+	
 clean:
 	rm -f *.o $(TARGET)
 cl:
