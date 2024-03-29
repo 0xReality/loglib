@@ -8,11 +8,11 @@
 #include <fcntl.h>     /* open */
 #include <stdarg.h>    /* va_list, va_start, va_end */
 
-
-#define BUFSIZE 1024
+#include "../config.h"
 
 #define LOG(l, lt, format, ...) printl(l, lt, __FILE__, __LINE__, __func__, format, ##__VA_ARGS__)
 #define FLOG(l) log_function_call(l, LOG, __FILE__, __LINE__, __func__)
+#define log_destroy(l) l_destroy(l, __func__)
 
 enum log_type{
     INFO = 0,
@@ -96,8 +96,10 @@ void sepatator(log l);
  * 
  * Paramètre:
  *   @param l adresse du pointeur de la structure de log.
+ *   @param func le nom de la fn apellante.
 */
-void log_destroy(log* l);
+void l_destroy(log* l, const char* func) ;
+
 
 
 #endif //LOGS_H

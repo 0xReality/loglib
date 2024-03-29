@@ -137,7 +137,7 @@ void sepatator(log l)
     fprintf(l->f, "\t\t\t\t\t\t\t\t\t\t\t--------------\n");
 }
 
-void log_destroy(log* l) 
+void l_destroy(log* l, const char* func) 
 {
     FLOG(*l);
     if (l == NULL || *l == NULL) {
@@ -145,7 +145,9 @@ void log_destroy(log* l)
     }
 
     LOG(*l,LOG, "free'd path and closed stream");
-    sepatator(*l);
+    if(0 == strcmp(func, "main")){
+        sepatator(*l);
+    }
     if ((*l)->path != NULL) {
         free((*l)->path);
         (*l)->path = NULL;
