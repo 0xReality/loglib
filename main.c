@@ -1,4 +1,5 @@
 #include "err_h/err.h" /* init_err_mess, get_err_mess */
+#include "flags_h/flags.h"
 #include "log_h/logs.h" /* log_init, LOG */
 
 
@@ -12,12 +13,14 @@ int main(int argc, char **argv)
     destroy_err_mess();
     log_destroy(&l);
     return 1; 
-  }else if(argc > 2){
+  }else if(argc > 4){
     LOG(l, FATAL, get_err_mess(TOOMUCH_ARGS, l));
     destroy_err_mess();
     log_destroy(&l);
     return 1;
   }
+
+  parse_arguments(argc, argv, l);
 
   LOG(l, INFO, "completed all argument tests");
   destroy_err_mess();

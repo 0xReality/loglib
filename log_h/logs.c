@@ -1,5 +1,6 @@
 #include "logs.h"
 
+
 char* get_log_file()
 {
     char* buf = malloc(sizeof(char)*BUFSIZE);
@@ -95,6 +96,8 @@ void printl(log l, enum log_type lt, const char *file, int line, const char* fun
 
     vfprintf(l->f, buf, args);
 
+    if(l->stdout_log == 1) vprintf(buf, args);
+
     va_end(args);
 
     fflush(l->f);
@@ -125,6 +128,8 @@ void log_function_call(log l, enum log_type lt, const char *file, int line, cons
     free(timebuf);
 
     fprintf(l->f, "%s", buf);
+
+    if(l->stdout_log == 1) printf("%s", buf);
 
     fflush(l->f);
 

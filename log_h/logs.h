@@ -22,6 +22,7 @@ enum log_type{
 };
 
 typedef struct log_s{
+    int stdout_log;
     char* path;
     FILE* f;
 }* log;
